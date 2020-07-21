@@ -17,14 +17,12 @@ public class HomeController {
 
 	@GetMapping({ "/", "/home" })
 	public String home(Principal principal, Model model) {
-		model.addAttribute("user", uService.findByUsername(principal.getName()));
-		return "home";
-	}
-
-	@GetMapping("/admin")
-	public String admin(Principal principal, Model model) {
-		model.addAttribute("user", uService.findByUsername(principal.getName()));
-		return "admin";
+		if (principal.getName() != null && uService.usernameExists(principal.getName())) {
+			model.addAttribute("user", uService.findByUsername(principal.getName()));
+			return "home";
+		} else {
+			return "redirect:/login";
+		}
 	}
 
 }

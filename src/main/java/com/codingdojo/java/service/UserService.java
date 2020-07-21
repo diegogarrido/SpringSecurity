@@ -1,5 +1,6 @@
 package com.codingdojo.java.service;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -7,33 +8,54 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.codingdojo.java.model.User;
-import com.codingdojo.java.model.dao.RoleDAO;
 import com.codingdojo.java.model.dao.UserDAO;
+import com.codingdojo.java.util.Role;
 
 @Service
 public class UserService {
 
 	@Autowired
 	private UserDAO uDao;
-	@Autowired
-	private RoleDAO rDao;
 
 	public User registerUser(User user) {
-		String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-		user.setPassword(hashed);
+		user.setPassword(hashPassword(user.getPassword()));
 		if (uDao.count() == 0) {
-			user.getRoles().add(rDao.findByName("ROLE_ADMIN").get());
-		} else {
-			user.getRoles().add(rDao.findByName("ROLE_USER").get());
+			user = addRole(user, Role.SUPER_ADMIN);
+			user = addRole(user, Role.ADMIN);
 		}
+		user = addRole(user, Role.USER);
 		return uDao.save(user);
 	}
 
-	public User registerUser(User user, Boolean admin) {
-		String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-		user.setPassword(hashed);
-		user.getRoles().add(rDao.findByName("ROLE_ADMIN").get());
+	public User setLastSignIn(User user) {
+		user.setLastSignIn(new Date());
 		return uDao.save(user);
+	}
+
+	public User addRole(User user, Role role) {
+		if (!user.getRoles().contains(role)) {
+			user.getRoles().add(role);
+			return uDao.save(user);
+		} else {
+			return user;
+		}
+	}
+
+	public User removeRole(User user, Role role) {
+		if (user.getRoles().contains(role)) {
+			user.getRoles().remove(role);
+			return uDao.save(user);
+		} else {
+			return user;
+		}
+	}
+
+	public String hashPassword(String password) {
+		return BCrypt.hashpw(password, BCrypt.gensalt());
+	}
+
+	public void deleteUser(User user) {
+		uDao.delete(user);
 	}
 
 	public User findByUsername(String username) {
@@ -54,8 +76,20 @@ public class UserService {
 		}
 	}
 
-	public boolean userExists(String userName) {
+	public boolean userExist(Integer id) {
+		return uDao.findById(id).isPresent();
+	}
+
+	public boolean emailExists(String email) {
+		return uDao.findByEmail(email).isPresent();
+	}
+
+	public boolean usernameExists(String userName) {
 		return uDao.findByUsername(userName).isPresent();
+	}
+
+	public Iterable<User> findAll() {
+		return uDao.findAll();
 	}
 
 	public boolean authenticateUser(String userName, String password) {

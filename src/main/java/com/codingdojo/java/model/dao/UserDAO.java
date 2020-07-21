@@ -12,4 +12,5 @@ import com.codingdojo.java.model.User;
 @Transactional
 public interface UserDAO extends CrudRepository<User, Integer> {
 	Optional<User> findByUsername(String username);
+	Optional<User> findByEmail(String email);
 }

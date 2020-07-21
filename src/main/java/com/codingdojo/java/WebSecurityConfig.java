@@ -16,29 +16,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
-    
+	@Autowired
+	private AuthenticationProviderImplementation authenticationProvider;
+
 	@Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-	
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-			.antMatchers("/static/**", "/registration").permitAll()
-			.antMatchers("/admin/**").access("hasRole('ADMIN')")
-			.anyRequest().authenticated()
-			.and()
-		.formLogin()
-			.loginPage("/login")
-			.permitAll()
-			.and()
-		.logout()
-			.permitAll();
+		http.authorizeRequests().antMatchers("/static/**", "/registration").permitAll()
+			.antMatchers("/admin/super/**").hasRole("SUPER_ADMIN")
+			.antMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated()
+			.and().formLogin().loginPage("/login").permitAll()
+			.and().logout().permitAll();
 	}
-	
+
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+		auth.authenticationProvider(authenticationProvider);
 	}
 }

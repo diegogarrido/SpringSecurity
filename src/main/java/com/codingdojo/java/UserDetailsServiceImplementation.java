@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.codingdojo.java.model.Role;
 import com.codingdojo.java.model.User;
 import com.codingdojo.java.service.UserService;
+import com.codingdojo.java.util.Role;
 
 @Service
 public class UserDetailsServiceImplementation implements UserDetailsService {

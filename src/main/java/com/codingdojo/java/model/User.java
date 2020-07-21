@@ -5,16 +5,18 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.codingdojo.java.util.Role;
 
 @Entity(name = "_user")
 public class User {
@@ -24,11 +26,14 @@ public class User {
 	private Integer id;
 	@Column(unique = true)
 	private String username;
+	@Column(unique = true)
+	private String email;
 	private String password;
 	@Transient
 	private String passwordConfirmation;
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
 	private List<Role> roles = new ArrayList<>();
+	private Date lastSignIn;
 	@CreationTimestamp
 	private Date createdAt;
 	@UpdateTimestamp
@@ -48,6 +53,14 @@ public class User {
 
 	public void setUsername(String userName) {
 		this.username = userName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public List<Role> getRoles() {
@@ -74,6 +87,14 @@ public class User {
 		this.passwordConfirmation = passwordConfirmation;
 	}
 
+	public Date getLastSignIn() {
+		return lastSignIn;
+	}
+
+	public void setLastSignIn(Date lastSignIn) {
+		this.lastSignIn = lastSignIn;
+	}
+
 	public Date getCreatedAt() {
 		return createdAt;
 	}
@@ -90,10 +111,18 @@ public class User {
 		this.updatedAt = updatedAt;
 	}
 
+	public boolean isAdmin() {
+		return roles.contains(Role.ADMIN);
+	}
+
+	public boolean isSuperAdmin() {
+		return roles.contains(Role.SUPER_ADMIN);
+	}
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", passwordConfirmation=" + passwordConfirmation + ", roles=" + roles + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + "]";
+		return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password + ", passwordConfirmation=" + passwordConfirmation + ", roles=" + roles + ", lastSignIn="
+				+ lastSignIn + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 }
