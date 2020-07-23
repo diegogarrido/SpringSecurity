@@ -112,11 +112,15 @@ public class User {
 	}
 
 	public boolean isAdmin() {
-		return roles.contains(Role.ADMIN);
+		return hasRole(Role.ADMIN);
 	}
 
 	public boolean isSuperAdmin() {
-		return roles.contains(Role.SUPER_ADMIN);
+		return hasRole(Role.SUPER_ADMIN);
+	}
+
+	public boolean hasRole(Role role){
+		return roles.contains(role);
 	}
 
 	@Override

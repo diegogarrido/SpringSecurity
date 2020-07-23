@@ -21,9 +21,9 @@ public class UserService {
 		user.setPassword(hashPassword(user.getPassword()));
 		if (uDao.count() == 0) {
 			user = addRole(user, Role.SUPER_ADMIN);
-			user = addRole(user, Role.ADMIN);
+		}else{
+			user = addRole(user, Role.USER);
 		}
-		user = addRole(user, Role.USER);
 		return uDao.save(user);
 	}
 
@@ -34,6 +34,7 @@ public class UserService {
 
 	public User addRole(User user, Role role) {
 		if (!user.getRoles().contains(role)) {
+			user.getRoles().clear();
 			user.getRoles().add(role);
 			return uDao.save(user);
 		} else {

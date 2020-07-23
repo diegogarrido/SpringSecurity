@@ -25,15 +25,15 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="u:${users}" th:if="${(user.isAdmin() && !u.isSuperAdmin()) || (user.isSuperAdmin() && u.isSuperAdmin())}">
+				<tr th:each="u:${users}" th:if="${(user.isAdmin() && !u.isSuperAdmin()) || user.isSuperAdmin()}">
 					<td th:text="${u.username}"></td>
 					<td th:text="${u.email}"></td>
 					<td class="text-center">
 						<p class="text-primary d-inline" th:if="${u.isSuperAdmin()}">Super Admin</p>
 						<p class="text-primary d-inline" th:if="${u.isAdmin()&&!u.isSuperAdmin()}">Admin</p>
-						<a class="btn btn-danger btn-sm d-inline" th:href="'/admin/delete_user?userId='+${u.id}" th:if="${!u.isAdmin()}">Delete</a>
-						<a class="btn btn-danger btn-sm d-inline" th:href="'/admin/super/delete_admin?adminId='+${u.id}" th:if="${user.isSuperAdmin() && u.isAdmin() && !u.isSuperAdmin()}">Delete admin</a>
-						<a class="btn btn-warning btn-sm d-inline" th:href="'/admin/make_admin?userId='+${u.id}" th:if="${!u.isAdmin()}">Make admin</a>
+						<a class="btn btn-danger btn-sm d-inline" th:href="'/admin/delete_user?userId='+${u.id}" th:if="${!u.isAdmin() && !u.isSuperAdmin()}">Delete</a>
+						<a class="btn btn-danger btn-sm d-inline" th:href="'/admin/super/delete_admin?adminId='+${u.id}" th:if="${user.isSuperAdmin() && u.isAdmin()}">Delete admin</a>
+						<a class="btn btn-warning btn-sm d-inline" th:href="'/admin/make_admin?userId='+${u.id}" th:if="${!u.isAdmin() && !u.isSuperAdmin()}">Make admin</a>
 						<a class="btn btn-warning btn-sm d-inline" th:href="'/admin/super/un_admin?adminId='+${u.id}" th:if="${user.isSuperAdmin() && u.isAdmin() && !u.isSuperAdmin()}">Un admin</a>
 					</td>
 				</tr>

@@ -48,7 +48,7 @@ public class AdminController {
 	@GetMapping("/super/un_admin")
 	public String unAdmin(Integer adminId) {
 		if (uService.userExist(adminId)) {
-			uService.removeRole(uService.findById(adminId), Role.ADMIN);
+			uService.addRole(uService.findById(adminId), Role.USER);
 		}
 		return "redirect:/admin";
 	}
