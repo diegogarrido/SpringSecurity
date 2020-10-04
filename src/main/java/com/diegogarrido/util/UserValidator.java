@@ -23,14 +23,14 @@ public class UserValidator implements Validator {
 	@Override
 	public void validate(Object object, Errors errors) {
 		User user = (User) object;
-		ValidationUtils.rejectIfEmpty(errors, "username", "Empty", "No username present");
-		ValidationUtils.rejectIfEmpty(errors, "email", "Empty", "No email present");
-		ValidationUtils.rejectIfEmpty(errors, "password", "Empty", "No password present");
-		ValidationUtils.rejectIfEmpty(errors, "passwordConfirmation", "Empty", "No password confirmation present");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Empty", "No username present");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Empty", "No email present");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Empty", "No password present");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirmation", "Empty", "No password confirmation present");
 		if (uService.emailExists(user.getEmail())) {
 			errors.rejectValue("email", "Exists", "Email already exists");
 		}
-		if(!user.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
+		if(!user.getEmail().matches("^[\\w-_.+]*[\\w-_.]@([\\w]+\\.)+[\\w]+[\\w]$")) {
 			errors.rejectValue("email", "Invalid", "Email not valid");
 		}
 		if (uService.usernameExists(user.getUsername())) {
