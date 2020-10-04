@@ -1,11 +1,19 @@
 # SpringSecurity
 Proyecto de ejemplo con implementación de Spring Security
+Versión API REST, utilizando JSON Web Token para almacenar nombre de usuario y rol que contiene
+
+Rutas disponibles:
+  /login (POST)
+  /register (POST)
+  /admin/users (GET)
+  /admin/users/delete/{id} (GET)
+  /admin/users/make_admin/{id} (GET)
+  /admin/super/un_admin/{id} (GET)
 
 Dependencias utilizadas
 
 - Spring Boot
 - Spring JPA
-- Thymeleaf
 - PostgresJDBC
 - Spring Web
 - DevTools
